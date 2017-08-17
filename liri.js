@@ -6,6 +6,8 @@ var keys = require("./keys.js");
 var twitter = require('twitter');
 // Call the Node package for spotify
 var Spotify = require('node-spotify-api');
+// Include the request npm package 
+var request = require("request");
 
 // Save the arguments into variables
 // -------------------------------------------------
@@ -69,20 +71,41 @@ function spotifySong() {
 		if (err) {
 			return console.log('Error occurred: ' + err);
 		};
-	// Display the artists by looping through length or artist array
-	for (var i =0; i < data.tracks.items[0].album.artists.length; i++) {
-		console.log(data.tracks.items[0].album.artists[i].name);
-	};
-	// Display the song name
-	console.log(data.tracks.items[0]);
-	// Display the preview link
-	console.log(data.tracks.href);
+		// Display the artists by looping through length or artist array
+		for (var i =0; i < data.tracks.items[0].album.artists.length; i++) {
+			console.log(data.tracks.items[0].album.artists[i].name);
+		};
+		// Display the song name
+		console.log(data.tracks.items[0].name);
+		// Display the preview link
+		console.log(data.tracks.items[0].preview_url);
+		// Display the album that the song is from
+		console.log(data.tracks.items[0].album.name);
+		});
+};
+
+// This is the function to get movie data
+
+function movieInfo() {
+	// Run a request to the OMDB API with the movie specified
+	request("http://www.omdbapi.com/?t=" + argument2 + "&y=&plot=short&apikey=40e9cece", function(error, response, body) {
+
+	  	// If the request is successful (i.e. if the response status code is 200)
+	  	if (!error && response.statusCode === 200) {
+
+		    // Parse the body of the site and recover just the movie title
+		    console.log(JSON.parse(body).Title);
+		    // Year the movie came out
+		    console.log(JSON.parse(body).Year);
+		    // IMDB rating of the movie
+		    console.log(JSON.parse(body).imdbRating);
+		    // Country where the movie was produced
+		    
+		};
 	});
 };
 
-spotifySong();
-
-
+movieInfo();
 
 
 
