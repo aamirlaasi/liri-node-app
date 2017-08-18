@@ -100,7 +100,15 @@ function movieInfo() {
 		    // IMDB rating of the movie
 		    console.log(JSON.parse(body).imdbRating);
 		    // Country where the movie was produced
-		    
+		    console.log(JSON.parse(body).Country);
+		    // Language of the movie
+		    console.log(JSON.parse(body).Language);
+		    // Plot of the movie
+		    console.log(JSON.parse(body).Plot);
+		    // Actors in the movie
+		    console.log(JSON.parse(body).Actors);
+		    // Rotten tomoatoes URL
+		    console.log(JSON.parse(body).Ratings[1].Value);
 		};
 	});
 };
