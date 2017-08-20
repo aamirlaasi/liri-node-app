@@ -44,9 +44,9 @@ function myTweets() {
 			// Read the tweet
 			var tweet = tweets[i].text;
 			// display the tweet
-			console.log(tweet);
+			console.log(i + " : " + tweet);
 			// display the time of the tweet
-			console.log(tweetTime);
+			console.log(i + " (time): " + tweetTime);
 		};  		
 	});
 };
@@ -62,14 +62,24 @@ function myTweets() {
 function spotifySong(song) {
 	// Initialize spotify API keys
 	var client = new Spotify (keys.spotifyKeys);
-	console.log(client);
-	// Specify parameters for API call
-	var params = {
-		type: 'track',
-		query: song,
-		limit: 1
+	// If a song has been passed into the function
+	// then set parameters to the specified song. 
+	// Otherwise set it to The Sign by Ace of Base
+	if (typeof(song) != "undefined") {
+		// Specify parameters for API call
+		var params = {
+			type: 'track',
+			query: song,
+			limit: 1
+		}
+	} else {
+		// Specify alternate parameters for API call
+		var params = {
+			type: 'track',
+			query: "The Sign Ace of Base",
+			limit: 1
+		};
 	};
-	console.log(params);
 	// Execute API call
 	client.search(params, function(err, data) {
 		if (err) {
@@ -77,15 +87,15 @@ function spotifySong(song) {
 		};
 		// Display the artists by looping through length or artist array
 		for (var i =0; i < data.tracks.items[0].album.artists.length; i++) {
-			console.log(data.tracks.items[0].album.artists[i].name);
+			console.log("Artists: " + data.tracks.items[0].album.artists[i].name);
 		};
 		// Display the song name
-		console.log(data.tracks.items[0].name);
+		console.log("Song: " + data.tracks.items[0].name);
 		// Display the preview link
-		console.log(data.tracks.items[0].preview_url);
+		console.log("Preview link: " + data.tracks.items[0].preview_url);
 		// Display the album that the song is from
-		console.log(data.tracks.items[0].album.name);
-		});
+		console.log("Album: " + data.tracks.items[0].album.name);
+	}); 
 };
 
 // This is the function to get movie data
@@ -98,21 +108,21 @@ function movieInfo(movie) {
 	  	if (!error && response.statusCode === 200) {
 
 		    // Parse the body of the site and recover just the movie title
-		    console.log(JSON.parse(body).Title);
+		    console.log("Movie Title: " + JSON.parse(body).Title);
 		    // Year the movie came out
-		    console.log(JSON.parse(body).Year);
+		    console.log("Release Year: " + JSON.parse(body).Year);
 		    // IMDB rating of the movie
-		    console.log(JSON.parse(body).imdbRating);
+		    console.log("IMDB Rating: " + JSON.parse(body).imdbRating);
 		    // Country where the movie was produced
-		    console.log(JSON.parse(body).Country);
+		    console.log("Country: " + JSON.parse(body).Country);
 		    // Language of the movie
-		    console.log(JSON.parse(body).Language);
+		    console.log("Language: " + JSON.parse(body).Language);
 		    // Plot of the movie
-		    console.log(JSON.parse(body).Plot);
+		    console.log("Plot: " + JSON.parse(body).Plot);
 		    // Actors in the movie
-		    console.log(JSON.parse(body).Actors);
+		    console.log("Actors: " + JSON.parse(body).Actors);
 		    // Rotten tomoatoes rating
-		    console.log(JSON.parse(body).Ratings[1].Value);
+		    console.log("Rotten Tomatoes Rating: " + JSON.parse(body).Ratings[1].Value);
 		};
 	});
 };
@@ -168,9 +178,28 @@ function random() {
 
 // -------------------------------------------------
 // Execute switch case and call functions as necessary
-
-
-
+// -------------------------------------------------
+switch(argument1) {
+	// call the myTweets function
+	case "my-tweets":
+		// run the my-tweets function
+		myTweets();
+		break;
+	// call the spotify function
+	case "spotify-this-song":
+		// run the spotify function
+		spotifySong(argument2);
+		break;
+	// call the movies function
+	case "movie-this":
+		// run the movies function
+		movieInfo(argument2);
+		break;
+	case "do-what-it-says":
+		// run the random function
+		random();
+		break;
+};
 
 
 
