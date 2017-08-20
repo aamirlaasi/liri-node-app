@@ -47,6 +47,13 @@ function myTweets() {
 			console.log(i + " : " + tweet);
 			// display the time of the tweet
 			console.log(i + " (time): " + tweetTime);
+			// Append the command and results to the log file log.txt
+			fs.appendFile("log.txt",';'+argument1 + ';' + i + " : " + tweet + ';' + i + " (time): " + tweetTime , function(err){
+			//If the code experiences any errors it will log the error to the console.
+			  if (err) {
+			    return console.log(err);
+			  }
+			});
 		};  		
 	});
 };
@@ -71,7 +78,14 @@ function spotifySong(song) {
 			type: 'track',
 			query: song,
 			limit: 1
-		}
+		};
+		// Append the command (argument 1 and 2) to the log file log.txt
+		fs.appendFile("log.txt",';'+argument1 + ';' + argument2 , function(err){
+		//If the code experiences any errors it will log the error to the console.
+		  if (err) {
+		    return console.log(err);
+		  };
+		});
 	} else {
 		// Specify alternate parameters for API call
 		var params = {
@@ -79,6 +93,13 @@ function spotifySong(song) {
 			query: "The Sign Ace of Base",
 			limit: 1
 		};
+		// Append the command (argument 1 only) to the log file log.txt
+		fs.appendFile("log.txt",';' + argument1, function(err){
+		//If the code experiences any errors it will log the error to the console.
+		  if (err) {
+		    return console.log(err);
+		  };
+		});
 	};
 	// Execute API call
 	client.search(params, function(err, data) {
@@ -95,14 +116,31 @@ function spotifySong(song) {
 		console.log("Preview link: " + data.tracks.items[0].preview_url);
 		// Display the album that the song is from
 		console.log("Album: " + data.tracks.items[0].album.name);
+		// Append the results to the log file log.txt
+		fs.appendFile("log.txt",';'+ "Song: " + data.tracks.items[0].name + ';' + 
+						"Preview link: " + data.tracks.items[0].preview_url + ';' +
+						"Album: " + data.tracks.items[0].album.name , function(err){
+			//If the code experiences any errors it will log the error to the console.
+		  	if (err) {
+		    return console.log(err);
+		  };
+		});
 	}); 
 };
 
 // This is the function to get movie data
 
 function movieInfo(movie) {
-	// Run a request to the OMDB API with the movie specified
-	request("http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=40e9cece", function(error, response, body) {
+	// If a movie has been passed into the function
+	// then set parameters to the specified movie. 
+	// Otherwise set it to "Mr. Nobody"
+	if (typeof(movie) != "undefined") {
+		var queryURL = "http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=40e9cece";
+	} else {
+		var queryURL = "http://www.omdbapi.com/?t=Mr.Nobody&y=&plot=short&apikey=40e9cece";
+	};
+		// Run a request to the OMDB API with the movie specified
+		request(queryURL, function(error, response, body) {
 
 	  	// If the request is successful (i.e. if the response status code is 200)
 	  	if (!error && response.statusCode === 200) {
@@ -123,6 +161,21 @@ function movieInfo(movie) {
 		    console.log("Actors: " + JSON.parse(body).Actors);
 		    // Rotten tomoatoes rating
 		    console.log("Rotten Tomatoes Rating: " + JSON.parse(body).Ratings[1].Value);
+			// Append the results to the log file log.txt
+			fs.appendFile("log.txt",';'+ "Movie Title: " + JSON.parse(body).Title + ';' + 
+							"Release Year: " + JSON.parse(body).Year + ';' +
+							"IMDB Rating: " + JSON.parse(body).imdbRating + ';' +
+							"Country: " + JSON.parse(body).Country + ';' +
+							"Language: " + JSON.parse(body).Language + ';' +
+							"Plot: " + JSON.parse(body).Plot + ';' +
+							"Actors: " + JSON.parse(body).Actors + ';' +
+							"Rotten Tomatoes Rating: " + JSON.parse(body).Ratings[1].Value , function(err){
+				//If the code experiences any errors it will log the error to the console.
+			  if (err) {
+			    return console.log(err);
+			  };
+			});
+
 		};
 	});
 };
