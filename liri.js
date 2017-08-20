@@ -8,6 +8,8 @@ var twitter = require('twitter');
 var Spotify = require('node-spotify-api');
 // Include the request npm package 
 var request = require("request");
+// Include the fs nmp package
+var fs = require("fs");
 
 // Save the arguments into variables
 // -------------------------------------------------
@@ -57,15 +59,17 @@ function myTweets() {
 // If no song is provided then the default is "The Sign" 
 // by Ace of Base
 
-function spotifySong() {
+function spotifySong(song) {
 	// Initialize spotify API keys
 	var client = new Spotify (keys.spotifyKeys);
+	console.log(client);
 	// Specify parameters for API call
 	var params = {
 		type: 'track',
-		query: argument2,
+		query: song,
 		limit: 1
 	};
+	console.log(params);
 	// Execute API call
 	client.search(params, function(err, data) {
 		if (err) {
@@ -86,9 +90,9 @@ function spotifySong() {
 
 // This is the function to get movie data
 
-function movieInfo() {
+function movieInfo(movie) {
 	// Run a request to the OMDB API with the movie specified
-	request("http://www.omdbapi.com/?t=" + argument2 + "&y=&plot=short&apikey=40e9cece", function(error, response, body) {
+	request("http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=40e9cece", function(error, response, body) {
 
 	  	// If the request is successful (i.e. if the response status code is 200)
 	  	if (!error && response.statusCode === 200) {
@@ -107,14 +111,63 @@ function movieInfo() {
 		    console.log(JSON.parse(body).Plot);
 		    // Actors in the movie
 		    console.log(JSON.parse(body).Actors);
-		    // Rotten tomoatoes URL
+		    // Rotten tomoatoes rating
 		    console.log(JSON.parse(body).Ratings[1].Value);
 		};
 	});
 };
 
-movieInfo();
+// This function pulls the command inside the random.txt file
 
+function random() {
+	// This will read the file
+	fs.readFile("random.txt", "utf8", function(error, data) {
+
+		// If the code experiences any errors it will log the error to the console.
+		if (error) {
+			return console.log(error);
+		};
+
+		// split data by commas
+		var dataArr = data.split(",");
+
+		// Save the arguments from the array
+		var textArg1 = dataArr[0];
+		var textArg2 = dataArr[1];
+
+		// Check if there are quotations around the second argument
+		// If so, then delete quotation marks.
+		// This is done using character codes because the code in the 
+		// text file for " is different from that typed in js
+
+		if(textArg2.charCodeAt(0)===8221 && textArg2.charCodeAt(textArg2.length - 1) === 8221) 
+		{
+			textArg2 = textArg2.substr(1, textArg2.length - 2);
+		};
+
+		// Depending on argument1 call the relevant function
+		switch(textArg1) {
+			// call the myTweets function
+			case "my-tweets":
+				// run the my-tweets function
+				myTweets();
+				break;
+			// call the spotify function
+			case "spotify-this-song":
+				// run the spotify function
+				spotifySong(textArg2);
+				break;
+			// call the movies function
+			case "movie-this":
+				// run the movies function
+				movieInfo(textArg2);
+				break;
+		};
+	});
+};
+
+// -------------------------------------------------
+// Execute switch case and call functions as necessary
 
 
 
